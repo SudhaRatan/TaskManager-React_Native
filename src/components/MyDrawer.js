@@ -16,7 +16,8 @@ const MyDrawer = (props) => {
   return (
     <View style={St.drawerContainer}>
       {
-        useDrawerStatus() === "open" && <StatusBar translucent />
+        useDrawerStatus() === "open" ? <StatusBar backgroundColor={"#111E53"} barStyle='light-content' />
+        : <StatusBar backgroundColor={"#F9FAFE"} barStyle='dark-content' />
       }
       <DrawerContentScrollView {...props} >
         <View>
@@ -55,6 +56,5 @@ const St = StyleSheet.create({
     color: '#F8FCFF'
   },
   backIconContainer: {
-    marginTop: StatusBar.currentHeight,
   }
 })

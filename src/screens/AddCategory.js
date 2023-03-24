@@ -6,7 +6,6 @@ import {
   TextInput,
   Pressable,
   Animated,
-  StatusBar,
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
@@ -233,7 +232,6 @@ export const St = StyleSheet.create({
     zIndex: 3,
     top: 0,
     right: 0,
-    marginTop: StatusBar.currentHeight,
     paddingHorizontal: 40,
     justifyContent: 'center',
     alignItems: 'center',

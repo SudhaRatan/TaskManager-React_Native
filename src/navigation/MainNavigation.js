@@ -1,7 +1,5 @@
 import {
   Dimensions,
-  View,
-  StatusBar,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -46,7 +44,6 @@ const MainNavigation = () => {
 
   return (
     <NavigationContainer>
-      <StatusBar translucent/>
       <MainStack.Navigator screenOptions={{
         header: () => null
       }}>

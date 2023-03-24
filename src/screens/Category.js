@@ -1,4 +1,4 @@
-import { Pressable, StatusBar, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import {
   View,
   Text,
@@ -95,9 +95,7 @@ const Category = ({ route, navigation }) => {
 
   return (
     <View style={{ backgroundColor: '#F9FAFE', flex: 1 }}>
-      <StatusBar backgroundColor='#F9FAFE' />
       <View style={{
-        height: StatusBar.currentHeight,
         backgroundColor: '#F9FAFE'
       }} />
       <Pressable
@@ -210,6 +208,7 @@ const St = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: 600,
+    color:'#000'
   },
   backCont: iconColor => ({
     paddingLeft: 15,
