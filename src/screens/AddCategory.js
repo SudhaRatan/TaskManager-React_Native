@@ -14,7 +14,6 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import SelectIcons from '../components/selectIcons';
-
 import { insertCategory } from '../db-functions/db-sqlite';
 
 const AddCategory = () => {

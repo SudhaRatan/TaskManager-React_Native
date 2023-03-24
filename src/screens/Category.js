@@ -6,6 +6,7 @@ import {
   Animated,
   ActivityIndicator,
   ToastAndroid,
+  // TouchableOpacity
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import CircularProgressBase from 'react-native-circular-progress-indicator';
@@ -19,6 +20,7 @@ import {
   deleteTask,
   insertTask,
 } from '../db-functions/db-sqlite';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Category = ({ route, navigation }) => {
 
@@ -34,6 +36,7 @@ const Category = ({ route, navigation }) => {
 
   const changeState = () => {
     setChange(!change)
+
   }
 
   const getTasks = () => {
@@ -125,7 +128,6 @@ const Category = ({ route, navigation }) => {
           }
         ]}>
           <Animated.View style={[
-            St.CatCont,
             {
               transform: [{
                 translateY: val.interpolate({
@@ -134,22 +136,53 @@ const Category = ({ route, navigation }) => {
                   extrapolate: 'clamp'
                 })
               }],
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 20,
             }
           ]}>
-            <View style={St.titleCont}>
-              <Text style={St.title}>{route.params.name}</Text>
+            <View style={St.CatCont}>
+              <View style={St.titleCont}>
+                <Text style={St.title}>{route.params.name}</Text>
+              </View>
+              <View style={St.progressCont}>
+                <CircularProgressBase
+                  radius={24}
+                  value={progress * 100}
+                  inActiveStrokeOpacity={0.4}
+                  progressValueColor={'#00000000'}
+                  activeStrokeColor={route.params.color}
+                  // delay={100}
+                  duration={600}
+                />
+              </View>
             </View>
-            <View style={St.progressCont}>
-              <CircularProgressBase
-                radius={24}
-                value={progress * 100}
-                inActiveStrokeOpacity={0.4}
-                progressValueColor={'#00000000'}
-                activeStrokeColor={route.params.color}
-                // delay={100}
-                duration={600}
-              />
-            </View>
+            <TouchableOpacity
+            onPress={() => navigation.navigate('AddTask',{
+              name: route.params.name,
+              color: route.params.color,
+              iconName: route.params.iconName,
+              id: route.params.id,
+            })}
+              activeOpacity={0.5}
+              style={[
+                St.scheduleTask,
+                {
+                  width: width - 40,
+                  backgroundColor: route.params.color,
+                }
+              ]}>
+              <View>
+                <Text
+                  style={{
+                    color: '#F9FAFE',
+                    fontSize: 16,
+                  }}
+                 >
+                  Schedule a task
+                </Text>
+              </View>
+            </TouchableOpacity>
           </Animated.View>
         </Animated.View>
         <View style={{ backgroundColor: '#F9FAFE', paddingHorizontal: 20 }}>
@@ -204,6 +237,7 @@ export default Category;
 const St = StyleSheet.create({
   Header: {
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#F9FAFE',
   },
   title: {
@@ -221,10 +255,17 @@ const St = StyleSheet.create({
   progressCont: {
   },
   CatCont: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
+  },
+  scheduleTask: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
+    elevation: 12,
+    borderRadius: 20
   }
 })

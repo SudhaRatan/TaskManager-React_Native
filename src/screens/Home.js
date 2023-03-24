@@ -36,6 +36,8 @@ const Home = ({ navigation }) => {
       .then(res => console.log(res))
       .catch(err => console.log(err))
     dropTasks()
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
   }
 
   const getCategories = () => {
@@ -61,7 +63,7 @@ const Home = ({ navigation }) => {
         setLoadingTasks(false)
       })
       .catch(err => {
-        setLoadingTasks(false)
+        setLoadingTasks(false)  
         setTasks(null)
       })
   }

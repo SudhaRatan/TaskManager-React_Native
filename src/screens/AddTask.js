@@ -8,6 +8,7 @@ import {
   Animated,
   StyleSheet,
   ToastAndroid,
+  ScrollView
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -18,10 +19,10 @@ import SelectCategories from '../components/selectCategories';
 
 import { insertTask } from '../db-functions/db-sqlite';
 
-const AddTask = () => {
+const AddTask = ({ route }) => {
   const [name, setName] = useState('')
   const [catId, setId] = useState(null)
-  const [iconColor, setIconColor] = useState("#3067C0")
+  const [iconColor, setIconColor] = useState("#000000")
   const [iconName, setIconName] = useState("chevron-down")
   const [categoryName, setCategoryName] = useState('Select a category')
   const { width, height } = Dimensions.get('window')
@@ -46,9 +47,23 @@ const AddTask = () => {
     }
   }
 
+  const setParams = () => {
+    if (route.params) {
+      setCategoryName(route.params.name)
+      setIconColor(route.params.color)
+      setIconName(route.params.iconName)
+      setId(route.params.id)
+    }
+  }
+
+  useEffect(() => {
+    setParams()
+  }, [])
+
   const setCat = (item) => {
     setIconName(item.iconName)
     setCategoryName(item.name)
+    setIconColor(item.iconColor)
     setId(item.id)
     Animated.spring(iconContScale, {
       toValue: 0,
@@ -74,39 +89,34 @@ const AddTask = () => {
   }
 
   return (
-    <View style={St.container}>
-      <Pressable
-        onPress={() => navigation.goBack()}
-        style={St.closeButton}
+    <>
+      <View 
+      style={St.container}
+      // contentContainerStyle={St.container}
       >
-        <Ionicons name="ios-close-circle-outline" size={60} color="#00000090" />
-      </Pressable>
-      <View style={[St.mainContainer,
-      {
-        marginTop: width / 1.5,
-      }
-      ]}>
-        <View style={St.form}>
-          <TextInput
-            style={[St.enterCategory, { width: width * 0.75, }]}
-            placeholder='Enter new task'
-            placeholderTextColor="#7B7998"
-            value={name}
-            onChangeText={(value) => {
-              setName(value)
-            }}
-          />
-          <View style={St.selectCont}>
-            <View
-              style={[
-                {
-                  width: width * 0.75 * 0.6,
-                  borderRadius: width * 0.75 * 0.6 * 0.5,
-                },
-                St.chooseIconsButton
-              ]}
-            >
-              <TouchableOpacity
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={St.closeButton}
+        >
+          <Ionicons name="ios-close-circle-outline" size={60} color="#00000090" />
+        </Pressable>
+        <View style={[St.mainContainer,
+        {
+          marginTop: height / 4,
+        }
+        ]}>
+          <View style={St.form}>
+            <TextInput
+              style={[St.enterCategory, { width: width * 0.75, }]}
+              placeholder='Enter new task'
+              placeholderTextColor="#7B7998"
+              value={name}
+              onChangeText={(value) => {
+                setName(value)
+              }}
+            />
+            <View style={St.selectCont}>
+              <View
                 style={[
                   {
                     width: width * 0.75 * 0.6,
@@ -114,69 +124,90 @@ const AddTask = () => {
                   },
                   St.chooseIconsButton
                 ]}
-                onPress={() => {
-                  iconAnimation()
-                }}
               >
-                <View
+                <TouchableOpacity
                   style={[
                     {
-                      borderRadius: width * 0.75 * 0.6,
+                      width: width * 0.75 * 0.6,
+                      borderRadius: width * 0.75 * 0.6 * 0.5,
                     },
-                    St.chooseIconsContainer
+                    St.chooseIconsButton
                   ]}
+                  onPress={() => {
+                    iconAnimation()
+                  }}
                 >
-                  <Text style={St.selIconText}>{categoryName}</Text>
-                  <Entypo name={iconName} size={24} color={iconColor} />
-                </View>
-              </TouchableOpacity>
+                  <View
+                    style={[
+                      {
+                        borderRadius: width * 0.75 * 0.6,
+                      },
+                      St.chooseIconsContainer
+                    ]}
+                  >
+                    <Text style={St.selIconText}>{categoryName}</Text>
+                    <Entypo name={iconName} size={24} color={iconColor} />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
+            <View
+              style={{
+                // width: 100, height: 100, backgroundColor: '#000000'
+              }}
+            >
+
+            </View>
+            <Animated.View style={[
+              {
+                width: width * 0.8,
+                transform: [
+                  {
+                    translateX: iconContScale.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [width, 0]
+                    })
+                  }
+                ],
+              },
+            ]}>
+              <SelectCategories setCat={setCat} />
+            </Animated.View>
           </View>
-          <Animated.View style={[
-            {
-              width: width * 0.8,
-              transform: [
-                {
-                  translateX: iconContScale.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [width, 0]
-                  })
-                }
-              ],
-            },
-          ]}>
-            <SelectCategories setCat={setCat} />
-          </Animated.View>
+        </View>
+        <View style={[
+          St.AddCategory,
+          {
+            right: width - (width * 0.9),
+            bottom: width - (width * 0.9),
+          }
+        ]}>
         </View>
       </View>
-      <View style={[
-        St.AddCategory,
-        {
-          right: width - (width * 0.9),
-          bottom: width - (width * 0.9),
-        }
-      ]}>
-        <Animated.View style={{
-          transform: [
-            {
-              translateY: iconContScale.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, width]
-              })
-            }
-          ],
-        }}>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={St.addCatButton}
-            onPress={AddTaskFunc}
-          >
-            <Text style={St.addCatButtonText}>Add Task</Text>
-            <Octicons name="tasklist" size={16} color="#F9FAFE" />
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-    </View>
+      <Animated.View style={{
+        transform: [
+          {
+            translateY: iconContScale.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, width]
+            })
+          }
+        ],
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        margin: 25,
+      }}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={St.addCatButton}
+          onPress={AddTaskFunc}
+        >
+          <Text style={St.addCatButtonText}>Add Task</Text>
+          <Octicons name="tasklist" size={16} color="#F9FAFE" />
+        </TouchableOpacity>
+      </Animated.View>
+    </>
   )
 }
 
@@ -185,14 +216,14 @@ export default AddTask;
 export const St = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFE'
+    backgroundColor: '#F9FAFE',
   },
   closeButton: {
     position: 'absolute',
     zIndex: 3,
     top: 0,
     right: 0,
-    paddingHorizontal: 40,
+    margin: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -219,14 +250,11 @@ export const St = StyleSheet.create({
     gap: 24,
   },
   enterCategory: {
-    height: 60,
     fontSize: 24,
-    color:'#222222'
+    color: '#222222'
   },
   chooseIconsButton: {
     flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   chooseIconsContainer: {
     flexDirection: 'row',
@@ -239,7 +267,7 @@ export const St = StyleSheet.create({
   },
   selIconText: {
     fontSize: 18,
-    color:"#222222",
+    color: "#222222",
   },
   selectCont: {
     flexDirection: 'row',

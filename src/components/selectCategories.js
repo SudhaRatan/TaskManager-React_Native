@@ -1,5 +1,5 @@
 import {
-  View,
+  ScrollView,
   Text,
   Pressable,
   FlatList,
@@ -29,36 +29,34 @@ const SelectCategories = ({ setCat }) => {
   }
 
   return (
-    <View>
+    <ScrollView style={[
+      St.iconsList,
+      {
+        width: width * 0.8,
+        height: width * 0.8 ,
+      }
+    ]}>
       {
         categories &&
-        <FlatList
-          style={[
-            St.iconsList,
-            {
-              width: width * 0.8,
-              height: width * 0.8 / 4 * 3,
-            }
-          ]}
-          data={categories}
-          renderItem={({ item, index }) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                style={St.iconContainer}
-                onPress={() => { setCat(item) }}
-              >
-                <Text style={{
-                  fontSize: 18,
-                  color: item.iconColor,
-                }}>{item.name}</Text>
-                <Entypo name={item.iconName} size={40} color={item.iconColor} />
-              </TouchableOpacity>
-            )
-          }}
-        />
+
+        categories.map((item, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
+              style={St.iconContainer}
+              onPress={() => { setCat(item) }}
+            >
+              <Text style={{
+                fontSize: 18,
+                color: item.iconColor,
+              }}>{item.name}</Text>
+              <Entypo name={item.iconName} size={40} color={item.iconColor} />
+            </TouchableOpacity>
+          )
+        })
+
       }
-    </View>
+    </ScrollView>
   )
 }
 

@@ -68,6 +68,7 @@ const CategoryCard = (props) => {
             id:props.id,
             color: props.iconColor,
             name: props.name,
+            iconName: props.iconName,
           })
         }}
       >
