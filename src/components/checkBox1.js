@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 import { MotiView } from 'moti';
-import { MaterialIcons } from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const CheckBox1 = ({ handleCheck, color }) => {
 

@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { Swipeable } from 'react-native-gesture-handler';
-import { MaterialCommunityIcons } from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MaterialIcons } from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { AnimatePresence } from 'moti';
 import CheckBox from './checkBox';
 import CheckBox1 from './checkBox1';

@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity
 } from "react-native"
-import { Entypo } from 'react-native-vector-icons/Entypo'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { StyleSheet } from "react-native"
 
 const SelectIcons = ({ setIcon }) => {

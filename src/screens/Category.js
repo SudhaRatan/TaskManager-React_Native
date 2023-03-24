@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from 'react-native';
-import { Entypo } from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
 import CircularProgressBase from 'react-native-circular-progress-indicator';
 import { useRef, useState, useEffect } from 'react';
 // import { getTaskDetails } from '../db-functions/db';

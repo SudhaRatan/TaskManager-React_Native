@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native"
-import { Entypo } from 'react-native-vector-icons/Entypo'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { useState, useEffect } from "react"
 // import { getCategories } from "../db-functions/db"
 import { SelectCategories as SC } from "../db-functions/db-sqlite"

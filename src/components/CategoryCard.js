@@ -6,11 +6,11 @@ import {
   Pressable,
 } from 'react-native';
 import ProgressBar from './ProgressBar';
-import { Entypo } from 'react-native-vector-icons/Entypo'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { ToastAndroid } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
-import { AntDesign } from 'react-native-vector-icons/AntDesign';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 // import { getTaskDetails } from '../db-functions/db';
 import { getTaskDetails } from '../db-functions/db-sqlite';
 import { useFocusEffect } from '@react-navigation/native';

@@ -8,8 +8,8 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
-import { AntDesign } from 'react-native-vector-icons/AntDesign';
-import { MaterialIcons } from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 

@@ -1,5 +1,5 @@
 import { View, TextInput, StyleSheet, Dimensions, Animated } from "react-native";
-import { Entypo } from 'react-native-vector-icons/Entypo'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { useRef } from "react";
 import { Pressable } from "react-native";
 

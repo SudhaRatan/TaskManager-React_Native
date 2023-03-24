@@ -10,10 +10,10 @@ import {
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
-import { Entypo } from 'react-native-vector-icons/Entypo';
-import { Octicons } from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Octicons from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import SelectCategories from '../components/selectCategories';
 

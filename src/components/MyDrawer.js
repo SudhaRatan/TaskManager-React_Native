@@ -4,8 +4,8 @@ import {
   StatusBar,
 } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { MaterialCommunityIcons } from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Entypo } from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { Pressable } from 'react-native';
 import { DrawerActions } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
