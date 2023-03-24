@@ -1,4 +1,4 @@
-package com.taskmanager;
+package com.rocketlabs.taskmanager;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

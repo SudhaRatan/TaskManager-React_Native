@@ -69,14 +69,18 @@ const AddCategory = () => {
   }
 
   const AddCategoryFunc = () => {
-    insertCategory({ name, iconName, iconColor })
-      .then(({stat,message}) => {
-        if (stat) {
-          navigation.navigate('Home')
-        }
-        ToastAndroid.show(message, 2000)
-      })
-      .catch(({stat,message}) =>  ToastAndroid.show(message, 2000))
+    if(name !== ""){
+      insertCategory({ name, iconName, iconColor })
+        .then(({stat,message}) => {
+          if (stat) {
+            navigation.navigate('Home')
+          }
+          ToastAndroid.show(message, 2000)
+        })
+        .catch(({stat,message}) =>  ToastAndroid.show(message, 2000))
+    }else{
+      ToastAndroid.show('Enter a category',1000)
+    }
   }
 
   return (
@@ -262,6 +266,7 @@ export const St = StyleSheet.create({
   enterCategory: {
     height: 60,
     fontSize: 24,
+    color:'#222222'
   },
   chooseIconsButton: {
     flexDirection: 'row',
@@ -279,6 +284,7 @@ export const St = StyleSheet.create({
   },
   selIconText: {
     fontSize: 18,
+    color:'#00000f'
   },
   selectCont: {
     flexDirection: 'row',

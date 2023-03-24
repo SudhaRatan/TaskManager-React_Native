@@ -1,4 +1,4 @@
-package com.taskmanager;
+package com.rocketlabs.taskmanager;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

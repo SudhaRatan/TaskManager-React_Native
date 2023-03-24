@@ -83,5 +83,6 @@ const St = StyleSheet.create({
   },
   inp: {
     fontSize: 18,
+    color:"#222222",
   }
 })

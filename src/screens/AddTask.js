@@ -221,6 +221,7 @@ export const St = StyleSheet.create({
   enterCategory: {
     height: 60,
     fontSize: 24,
+    color:'#222222'
   },
   chooseIconsButton: {
     flexDirection: 'row',
@@ -238,6 +239,7 @@ export const St = StyleSheet.create({
   },
   selIconText: {
     fontSize: 18,
+    color:"#222222",
   },
   selectCont: {
     flexDirection: 'row',

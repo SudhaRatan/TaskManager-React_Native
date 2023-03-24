@@ -10,7 +10,6 @@ import {
 import Entypo from 'react-native-vector-icons/Entypo';
 import CircularProgressBase from 'react-native-circular-progress-indicator';
 import { useRef, useState, useEffect } from 'react';
-// import { getTaskDetails } from '../db-functions/db';
 import { getTaskDetails } from '../db-functions/db-sqlite';
 import TaskCard from '../components/TaskCard';
 import AddTask from '../components/addTaskInp';
@@ -80,7 +79,7 @@ const Category = ({ route, navigation }) => {
   const addButtonHeight = Math.floor(width < height ? height * 0.08 : width * 0.08)
 
   const AddTaskFunc = async () => {
-    if(newTask !== ""){
+    if (newTask !== "") {
       insertTask(newTask, route.params.id)
         .then(res => {
           setNewTask('')
@@ -90,7 +89,9 @@ const Category = ({ route, navigation }) => {
         .catch(err => {
           console.log(err)
         })
-    }else ToastAndroid.show("Enter a task", 500)
+    } else {
+      ToastAndroid.show("Enter a task", 500)
+    }
   }
 
   return (
@@ -102,7 +103,7 @@ const Category = ({ route, navigation }) => {
         style={St.backCont(route.params.color)}
         onPress={() => navigation.navigate('Home')}
       >
-        <Entypo name='chevron-left' size={40} />
+        <Entypo name='chevron-left' size={40} color={'#00000090'} />
       </Pressable>
       <Animated.ScrollView
         onScroll={Animated.event(
@@ -208,7 +209,7 @@ const St = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: 600,
-    color:'#000'
+    color: '#000'
   },
   backCont: iconColor => ({
     paddingLeft: 15,

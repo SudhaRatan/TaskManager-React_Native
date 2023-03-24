@@ -6,8 +6,7 @@ export const createChannel = () => {
     channelName: "Main Notifications",
     playSound: true,
     soundName: "default",
-    importance: Importance.HIGH
-    ,
+    importance: Importance.HIGH,
     vibrate: true,
   })
 }
@@ -15,7 +14,21 @@ export const createChannel = () => {
 export const testNotification = (obj) => {
   PushNotification.localNotification({
     channelId: "mainNotis",
-    title: "You have clicked a fuckin button",
-    message: "Go to gym to fuckin bitch"
+    title: "Title",
+    message: "Message",
+    bigText: "",
+    // actions: ["Yes", "No"],
+
   })
+}
+
+export const testScheduleNotification = () => {
+  PushNotification.localNotificationSchedule({
+    channelId: "mainNotis",
+    title:"Hi",
+    message: "My Notification Message",
+    date: new Date(Date.now() + 6 * 1000),
+    allowWhileIdle: true,
+    repeatTime: 1,
+  });
 }

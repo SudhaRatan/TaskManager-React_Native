@@ -15,6 +15,7 @@ import Add from '../components/Add';
 import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
 import { ToastAndroid } from 'react-native';
+import { createChannel } from '../notifications/notifications';
 
 import {
   CreateCategoriesTable,
@@ -74,6 +75,7 @@ const Home = ({ navigation }) => {
     CreateTasksTable();
     getCategories();
     getTasks();
+    createChannel();
   }, [isDrawerOpen]);
 
   useFocusEffect(useCallback(() => {
@@ -210,7 +212,7 @@ const Home = ({ navigation }) => {
                     ?
                     <View>
                       {
-                        tasks.map((item, index) => {
+                      tasks.map((item, index) => {
                           return (
                             <TaskCard key={item.id} index={index} handleDelete={handleDelete} {...item} change={change} changeState={changeState} />
                           )
