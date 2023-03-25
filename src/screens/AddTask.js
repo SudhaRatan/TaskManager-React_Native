@@ -8,7 +8,8 @@ import {
   Animated,
   StyleSheet,
   ToastAndroid,
-  ScrollView
+  ScrollView,
+  Modal
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -16,6 +17,9 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import SelectCategories from '../components/selectCategories';
+import { AnimatePresence } from 'moti';
+import CheckBox from '../components/checkBox';
+import CheckBox1 from '../components/checkBox1';
 
 import { insertTask } from '../db-functions/db-sqlite';
 
@@ -31,8 +35,16 @@ const AddTask = ({ route }) => {
   const [toggle1, setToggle1] = useState(false)
   const scale = useRef(new Animated.Value(0)).current
   const iconContScale = useRef(new Animated.Value(0)).current
+  const [showModal, setShowModal] = useState(false)
+  const [check, setCheck] = useState(false)
+
+  const closeModal = () => {
+    setShowModal(false)
+    console.log('sf')
+  }
 
   const iconAnimation = () => {
+    setShowModal(!showModal)
     setToggle1(!toggle1)
     if (toggle1) {
       Animated.spring(iconContScale, {
@@ -65,6 +77,7 @@ const AddTask = ({ route }) => {
     setCategoryName(item.name)
     setIconColor(item.iconColor)
     setId(item.id)
+    setShowModal(false)
     Animated.spring(iconContScale, {
       toValue: 0,
       useNativeDriver: true
@@ -88,11 +101,23 @@ const AddTask = ({ route }) => {
 
   }
 
+  const handleCheck = () => {
+    setCheck(!check)
+  }
+
   return (
     <>
-      <View 
-      style={St.container}
-      // contentContainerStyle={St.container}
+      <Modal
+        visible={showModal}
+        transparent={false}
+        animationType="fade"
+        style={{
+          flex: 1
+        }}>
+        <SelectCategories setCat={setCat} closeModal={closeModal} />
+      </Modal>
+      <View
+        style={St.container}
       >
         <Pressable
           onPress={() => navigation.goBack()}
@@ -106,6 +131,7 @@ const AddTask = ({ route }) => {
         }
         ]}>
           <View style={St.form}>
+            {/* Add new task */}
             <TextInput
               style={[St.enterCategory, { width: width * 0.75, }]}
               placeholder='Enter new task'
@@ -115,6 +141,7 @@ const AddTask = ({ route }) => {
                 setName(value)
               }}
             />
+            {/* Select a category */}
             <View style={St.selectCont}>
               <View
                 style={[
@@ -141,6 +168,7 @@ const AddTask = ({ route }) => {
                     style={[
                       {
                         borderRadius: width * 0.75 * 0.6,
+                        gap: 5,
                       },
                       St.chooseIconsContainer
                     ]}
@@ -151,37 +179,51 @@ const AddTask = ({ route }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View
-              style={{
-                // width: 100, height: 100, backgroundColor: '#000000'
-              }}
-            >
 
-            </View>
-            <Animated.View style={[
-              {
-                width: width * 0.8,
-                transform: [
+            {/* Option to set a scheduled task */}
+            <View
+              style={[
+                {
+                  width: width * 0.75 * 0.6,
+                  gap:20,
+                },
+                St.chooseIconsButton
+              ]}
+            >
+              <TouchableOpacity
+                onPress={handleCheck}
+                style={[
                   {
-                    translateX: iconContScale.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [width, 0]
-                    })
-                  }
-                ],
-              },
-            ]}>
-              <SelectCategories setCat={setCat} />
-            </Animated.View>
+                    borderRadius: width * 0.75 * 0.6,
+                    gap: 0,
+                  },
+                  St.chooseIconsContainer
+                ]}
+              >
+                <AnimatePresence>
+                  {!check && <CheckBox color={iconColor} handleCheck={handleCheck} />}
+                  {check && <CheckBox1 color={iconColor} handleCheck={handleCheck} />}
+                </AnimatePresence>
+                <Text style={{ color: '#000', fontSize: 20 }}>Schedule</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleCheck}
+                style={[
+                  {
+                    borderRadius: width * 0.75 * 0.6,
+                    gap: 0,
+                  },
+                  St.chooseIconsContainer
+                ]}
+              >
+                <AnimatePresence>
+                  {check && <CheckBox color={iconColor} handleCheck={handleCheck} />}
+                  {!check && <CheckBox1 color={iconColor} handleCheck={handleCheck} />}
+                </AnimatePresence>
+                <Text style={{ color: '#000', fontSize: 20 }}>Repeat</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={[
-          St.AddCategory,
-          {
-            right: width - (width * 0.9),
-            bottom: width - (width * 0.9),
-          }
-        ]}>
         </View>
       </View>
       <Animated.View style={{
@@ -261,7 +303,6 @@ export const St = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    gap: 5,
     borderWidth: 1,
     borderColor: '#7B7998',
   },

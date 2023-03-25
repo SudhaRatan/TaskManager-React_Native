@@ -1,5 +1,6 @@
 import {
   ScrollView,
+  View,
   Text,
   Pressable,
   FlatList,
@@ -12,9 +13,9 @@ import { useState, useEffect } from "react"
 // import { getCategories } from "../db-functions/db"
 import { SelectCategories as SC } from "../db-functions/db-sqlite"
 
-const SelectCategories = ({ setCat }) => {
+const SelectCategories = ({ setCat,closeModal }) => {
 
-  const { width } = Dimensions.get('window')
+  const { width, height } = Dimensions.get('window')
   const [categories, setCategories] = useState(null)
   const [catName, setCatname] = useState(null)
 
@@ -29,34 +30,65 @@ const SelectCategories = ({ setCat }) => {
   }
 
   return (
-    <ScrollView style={[
-      St.iconsList,
-      {
-        width: width * 0.8,
-        height: width * 0.8 ,
-      }
-    ]}>
-      {
-        categories &&
+    <View>
 
-        categories.map((item, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              style={St.iconContainer}
-              onPress={() => { setCat(item) }}
-            >
-              <Text style={{
-                fontSize: 18,
-                color: item.iconColor,
-              }}>{item.name}</Text>
-              <Entypo name={item.iconName} size={40} color={item.iconColor} />
-            </TouchableOpacity>
-          )
-        })
+      <View style={{
+        height: height,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#00000000',
+        gap: 10,
+      }}>
+        <Pressable onPress={() => {
+          closeModal()
+        }} style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          margin: 20,
+        }}>
+          <Entypo name="circle-with-cross" size={50} color='#000' />
+        </Pressable>
+        <View>
+          <Text style={{
+            fontSize: 24,
+            color: '#000'
+          }}>Select a category</Text>
+        </View>
+        <View style={{
+          height: width * 0.8,
+        }}>
+          <ScrollView 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[
+            St.iconsList,
+            {
+              width: width * 0.8,
+            }
+          ]}>
+            {
+              categories &&
 
-      }
-    </ScrollView>
+              categories.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={St.iconContainer}
+                    onPress={() => { setCat(item) }}
+                  >
+                    <Text style={{
+                      fontSize: 18,
+                      color: item.iconColor,
+                    }}>{item.name}</Text>
+                    <Entypo name={item.iconName} size={40} color={item.iconColor} />
+                  </TouchableOpacity>
+                )
+              })
+            }
+          </ScrollView>
+        </View>
+      </View>
+    </View>
   )
 }
 

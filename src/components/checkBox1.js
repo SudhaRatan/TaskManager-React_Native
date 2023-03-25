@@ -10,6 +10,7 @@ const CheckBox1 = ({ handleCheck, color }) => {
       <MotiView style={{
         backgroundColor: '#000fff00',
         marginRight: 10,
+        width:25
       }}
         from={{
           scale: 0.3
