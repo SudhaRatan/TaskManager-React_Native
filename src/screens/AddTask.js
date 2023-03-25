@@ -20,8 +20,9 @@ import SelectCategories from '../components/selectCategories';
 import { AnimatePresence } from 'moti';
 import CheckBox from '../components/checkBox';
 import CheckBox1 from '../components/checkBox1';
-
 import { insertTask } from '../db-functions/db-sqlite';
+
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 const AddTask = ({ route }) => {
   const [name, setName] = useState('')
@@ -37,10 +38,24 @@ const AddTask = ({ route }) => {
   const iconContScale = useRef(new Animated.Value(0)).current
   const [showModal, setShowModal] = useState(false)
   const [check, setCheck] = useState(false)
+  const [check1, setCheck1] = useState(false)
+  const [showModal1, setShowModal1] = useState(false)
+
+  const [date, setDate] = useState(new Date(1598051730000));
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+  };
 
   const closeModal = () => {
     setShowModal(false)
-    console.log('sf')
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange,
+      mode: "time",
+      is24Hour: true,
+    });
   }
 
   const iconAnimation = () => {
@@ -101,8 +116,14 @@ const AddTask = ({ route }) => {
 
   }
 
-  const handleCheck = () => {
-    setCheck(!check)
+  const handleCheck = (type) => {
+    if (type === 'schedule') {
+      setCheck1(false)
+      setCheck(!check)
+    } else {
+      setCheck(false)
+      setCheck1(!check1)
+    }
   }
 
   return (
@@ -185,13 +206,13 @@ const AddTask = ({ route }) => {
               style={[
                 {
                   width: width * 0.75 * 0.6,
-                  gap:20,
+                  gap: 20,
                 },
                 St.chooseIconsButton
               ]}
             >
               <TouchableOpacity
-                onPress={handleCheck}
+                onPress={() => handleCheck('schedule')}
                 style={[
                   {
                     borderRadius: width * 0.75 * 0.6,
@@ -201,13 +222,13 @@ const AddTask = ({ route }) => {
                 ]}
               >
                 <AnimatePresence>
-                  {!check && <CheckBox color={iconColor} handleCheck={handleCheck} />}
-                  {check && <CheckBox1 color={iconColor} handleCheck={handleCheck} />}
+                  {!check && <CheckBox color={iconColor} handleCheck={() => handleCheck('schedule')} />}
+                  {check && <CheckBox1 color={iconColor} handleCheck={() => handleCheck('schedule')} />}
                 </AnimatePresence>
                 <Text style={{ color: '#000', fontSize: 20 }}>Schedule</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={handleCheck}
+                onPress={() => handleCheck('repeat')}
                 style={[
                   {
                     borderRadius: width * 0.75 * 0.6,
@@ -217,8 +238,8 @@ const AddTask = ({ route }) => {
                 ]}
               >
                 <AnimatePresence>
-                  {check && <CheckBox color={iconColor} handleCheck={handleCheck} />}
-                  {!check && <CheckBox1 color={iconColor} handleCheck={handleCheck} />}
+                  {!check1 && <CheckBox color={iconColor} handleCheck={() => handleCheck('repeat')} />}
+                  {check1 && <CheckBox1 color={iconColor} handleCheck={() => handleCheck('repeat')} />}
                 </AnimatePresence>
                 <Text style={{ color: '#000', fontSize: 20 }}>Repeat</Text>
               </TouchableOpacity>
