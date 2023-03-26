@@ -44,8 +44,10 @@ const AddTask = ({ route }) => {
   const [date, setDate] = useState(new Date(1598051730000));
 
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
+    // console.log(event,selectedDate)
+    const currentDate = event.nativeEvent.timestamp;
+    const da = new Date(selectedDate)
+    console.log(da,currentDate)
   };
 
   const closeModal = () => {
@@ -57,6 +59,10 @@ const AddTask = ({ route }) => {
       is24Hour: true,
     });
   }
+
+  useEffect(() => {
+// console.log(date)
+  },[date])
 
   const iconAnimation = () => {
     setShowModal(!showModal)
