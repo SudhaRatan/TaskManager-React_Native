@@ -41,28 +41,11 @@ const AddTask = ({ route }) => {
   const [check1, setCheck1] = useState(false)
   const [showModal1, setShowModal1] = useState(false)
 
-  const [date, setDate] = useState(new Date(1598051730000));
-
-  const onChange = (event, selectedDate) => {
-    // console.log(event,selectedDate)
-    const currentDate = event.nativeEvent.timestamp;
-    const da = new Date(selectedDate)
-    console.log(da,currentDate)
-  };
+  const [dateTime, setDateTime] = useState(new Date());
 
   const closeModal = () => {
     setShowModal(false)
-    DateTimePickerAndroid.open({
-      value: date,
-      onChange,
-      mode: "time",
-      is24Hour: true,
-    });
   }
-
-  useEffect(() => {
-// console.log(date)
-  },[date])
 
   const iconAnimation = () => {
     setShowModal(!showModal)
@@ -122,8 +105,38 @@ const AddTask = ({ route }) => {
 
   }
 
+  const onChangeDate = (event, selectedDate) => {
+    const da = new Date(selectedDate)
+    console.log(da.toISOString())
+    setDateTime(da)
+    DateTimePickerAndroid.open({
+      value: dateTime,
+      onChange: onChangeTime,
+      mode: "time",
+      is24Hour: true,
+    });
+  };
+
+  const onChangeTime = (event,selectedTime) => {
+    console.log(event,selectedTime)
+    const da = new Date(selectedTime)
+    // console.log(da.toTimeString())
+    const dada = dateTime.toISOString()
+    console.log(dateTime)
+    const dat = `${dada.getFullYear()}-${dada.getUTCMonth()}-${dada.getDate()}T${da.toTimeString().slice(0,8)}`
+    console.log(dat)
+  }
+
   const handleCheck = (type) => {
     if (type === 'schedule') {
+      if (!check) {
+        DateTimePickerAndroid.open({
+          value: dateTime,
+          onChange:onChangeDate,
+          mode: "date",
+          is24Hour: true,
+        });
+      }
       setCheck1(false)
       setCheck(!check)
     } else {
