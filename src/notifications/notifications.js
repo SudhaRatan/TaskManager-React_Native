@@ -22,12 +22,14 @@ export const testNotification = (obj) => {
   })
 }
 
-export const testScheduleNotification = () => {
+export const testScheduleNotification = (date,data) => {
   PushNotification.localNotificationSchedule({
     channelId: "mainNotis",
-    title:"Hi",
-    message: "My Notification Message",
-    date: new Date(Date.now() + 6 * 1000),
+    title:data.title,
+    message: data.message,
+    playSound: true,
+    soundName: "default",
+    date: new Date(date),
     allowWhileIdle: true,
     repeatTime: 1,
   });

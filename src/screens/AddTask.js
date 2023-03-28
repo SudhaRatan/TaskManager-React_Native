@@ -23,6 +23,7 @@ import CheckBox1 from '../components/checkBox1';
 import { insertTask } from '../db-functions/db-sqlite';
 
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { testScheduleNotification } from '../notifications/notifications';
 
 const AddTask = ({ route }) => {
   const [name, setName] = useState('')
@@ -41,7 +42,6 @@ const AddTask = ({ route }) => {
   const [check1, setCheck1] = useState(false)
   const [showModal1, setShowModal1] = useState(false)
 
-  const [dateTime, setDateTime] = useState(new Date());
 
   const closeModal = () => {
     setShowModal(false)
@@ -94,6 +94,7 @@ const AddTask = ({ route }) => {
       if (catId !== null) {
         insertTask(name, catId)
           .then(({ stat, message }) => {
+            if (check) setScheduledNotification()
             navigation.navigate('Home')
             ToastAndroid.show(message, 2000)
           })
@@ -102,37 +103,38 @@ const AddTask = ({ route }) => {
           })
       } else ToastAndroid.show("Select a category", 1000)
     } else ToastAndroid.show('Enter task', 1000)
-
   }
 
+  const setScheduledNotification = () => {
+    testScheduleNotification(`${date1.getFullYear()}-${date1.getMonth() + 1}-${date1.getDate()}T${time1.toString().slice(0, 6)}00.000`, {
+      title: categoryName,
+      message: name,
+    })
+  }
+
+  const [date1, setDate1] = useState(new Date());
+  const [time1, setTime1] = useState(new Date());
+
   const onChangeDate = (event, selectedDate) => {
-    const da = new Date(selectedDate)
-    console.log(da.toISOString())
-    setDateTime(da)
+    setDate1(selectedDate)
     DateTimePickerAndroid.open({
-      value: dateTime,
+      value: date1,
       onChange: onChangeTime,
       mode: "time",
       is24Hour: true,
     });
   };
 
-  const onChangeTime = (event,selectedTime) => {
-    console.log(event,selectedTime)
-    const da = new Date(selectedTime)
-    // console.log(da.toTimeString())
-    const dada = dateTime.toISOString()
-    console.log(dateTime)
-    const dat = `${dada.getFullYear()}-${dada.getUTCMonth()}-${dada.getDate()}T${da.toTimeString().slice(0,8)}`
-    console.log(dat)
+  const onChangeTime = (event, selectedTime) => {
+    setTime1(`${selectedTime.toTimeString().slice(0, 6)}00.000`)
   }
 
   const handleCheck = (type) => {
     if (type === 'schedule') {
       if (!check) {
         DateTimePickerAndroid.open({
-          value: dateTime,
-          onChange:onChangeDate,
+          value: date1,
+          onChange: onChangeDate,
           mode: "date",
           is24Hour: true,
         });
@@ -246,7 +248,9 @@ const AddTask = ({ route }) => {
                 </AnimatePresence>
                 <Text style={{ color: '#000', fontSize: 20 }}>Schedule</Text>
               </TouchableOpacity>
-              <TouchableOpacity
+
+              {/* repeat */}
+              {/* <TouchableOpacity
                 onPress={() => handleCheck('repeat')}
                 style={[
                   {
@@ -261,7 +265,11 @@ const AddTask = ({ route }) => {
                   {check1 && <CheckBox1 color={iconColor} handleCheck={() => handleCheck('repeat')} />}
                 </AnimatePresence>
                 <Text style={{ color: '#000', fontSize: 20 }}>Repeat</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+            </View>
+            <View>
+              {/* <Text style={{color:"black"}}>{date1.toJSON()}</Text> */}
+              <Text style={{ color: "black", fontSize: 20 }}>{check && `Remainder set on ${date1.getDate()}/${date1.getMonth() + 1}/${date1.getFullYear()}\n@ ${new Date(`2023-12-12T${time1}`).toLocaleTimeString()}`}</Text>
             </View>
           </View>
         </View>
