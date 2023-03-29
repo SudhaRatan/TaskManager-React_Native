@@ -13,12 +13,14 @@ import CircularProgressBase from 'react-native-circular-progress-indicator';
 import { useRef, useState, useEffect } from 'react';
 import { getTaskDetails } from '../db-functions/db-sqlite';
 import TaskCard from '../components/TaskCard';
+import TaskCardScheduled from '../components/TaskCardScheduled';
 import AddTask from '../components/addTaskInp';
 
 import {
   SelectTasks,
   deleteTask,
   insertTask,
+  SelectScheduledTasks,
 } from '../db-functions/db-sqlite';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -26,6 +28,8 @@ const Category = ({ route, navigation }) => {
 
   const [tasks, setTasks] = useState(null)
   const [loadingTasks, setLoadingTasks] = useState(true)
+  const [scheduledTasks, setScheduledTasks] = useState(null)
+  const [loadingSTasks, setLoadingSTasks] = useState(true)
   const [change, setChange] = useState(false)
   const [progress, setProgress] = useState(0)
   const [newTask, setNewTask] = useState('')
@@ -40,7 +44,6 @@ const Category = ({ route, navigation }) => {
   }
 
   const getTasks = () => {
-
     SelectTasks(route.params.id)
       .then(res => {
         setTasks(res)
@@ -49,6 +52,18 @@ const Category = ({ route, navigation }) => {
       .catch(err => {
         setTasks(null)
         setLoadingTasks(false)
+      })
+  }
+
+  const getScheduledTasks = () => {
+    SelectScheduledTasks(route.params.id)
+      .then(res => {
+        setScheduledTasks(res)
+        setLoadingSTasks(false)
+      })
+      .catch(err => {
+        setScheduledTasks(null)
+        setLoadingSTasks(false)
       })
   }
 
@@ -61,6 +76,7 @@ const Category = ({ route, navigation }) => {
   useEffect(() => {
     getTD()
     getTasks();
+    getScheduledTasks();
   }, [change])
 
   const handleDelete = async (id) => {
@@ -83,7 +99,7 @@ const Category = ({ route, navigation }) => {
 
   const AddTaskFunc = async () => {
     if (newTask !== "") {
-      insertTask(newTask, route.params.id)
+      insertTask(newTask, route.params.id, false, false)
         .then(res => {
           setNewTask('')
           ToastAndroid.show(res.message, 1000)
@@ -158,12 +174,12 @@ const Category = ({ route, navigation }) => {
               </View>
             </View>
             <TouchableOpacity
-            onPress={() => navigation.navigate('AddTask',{
-              name: route.params.name,
-              color: route.params.color,
-              iconName: route.params.iconName,
-              id: route.params.id,
-            })}
+              onPress={() => navigation.navigate('AddTask', {
+                name: route.params.name,
+                color: route.params.color,
+                iconName: route.params.iconName,
+                id: route.params.id,
+              })}
               activeOpacity={0.5}
               style={[
                 St.scheduleTask,
@@ -178,7 +194,7 @@ const Category = ({ route, navigation }) => {
                     color: '#F9FAFE',
                     fontSize: 16,
                   }}
-                 >
+                >
                   Schedule a task
                 </Text>
               </View>
@@ -187,15 +203,49 @@ const Category = ({ route, navigation }) => {
         </Animated.View>
         <View style={{ backgroundColor: '#F9FAFE', paddingHorizontal: 20 }}>
           {
+            loadingSTasks
+              ?
+              <View style={St.loadingSt}>
+                <ActivityIndicator size="large" color={route.params.color} />
+              </View>
+              :
+              scheduledTasks
+                ?
+                <View>
+                  <Text style={{
+                    color: '#000',
+                    fontSize: 18,
+                  }}>Scheduled tasks</Text>
+                  {
+                    scheduledTasks.map((item, index) => {
+                      return (
+                        <TaskCardScheduled key={item.id} index={index} handleDelete={handleDelete} {...item}
+                          change={change}
+                          changeState={changeState}
+                        />
+                      )
+                    })
+                  }
+                </View>
+                :
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginVertical:10,padding:10,borderWidth:1,borderColor:route.params.color,borderRadius:50}}>
+                  <Text style={St.categoriesText}>Schedule Tasks to display here</Text>
+                </View>
+          }
+          {
             loadingTasks
               ?
               <View style={St.loadingSt}>
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" color={route.params.color} />
               </View>
               :
               tasks
                 ?
                 <View>
+                  <Text style={{
+                    color: '#000',
+                    fontSize: 18,
+                  }}>Other tasks</Text>
                   {
                     tasks.map((item, index) => {
                       return (
@@ -209,7 +259,7 @@ const Category = ({ route, navigation }) => {
                   <View style={{ height: addButtonHeight }} />
                 </View>
                 :
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginVertical:10,padding:10,borderWidth:1,borderColor:route.params.color,borderRadius:50}}>
                   <Text style={St.categoriesText}>Add Tasks to display here</Text>
                 </View>
           }
@@ -250,9 +300,8 @@ const St = StyleSheet.create({
     paddingRight: 5,
     backgroundColor: '#F9FAFE',
   }),
-  titleCont: {
-  },
-  progressCont: {
+  categoriesText:{
+    color:'#000',
   },
   CatCont: {
     // flex: 1,
@@ -267,5 +316,8 @@ const St = StyleSheet.create({
     paddingVertical: 10,
     elevation: 12,
     borderRadius: 20
-  }
+  },
+  loadingSt:{
+    marginTop:50,
+  },
 })

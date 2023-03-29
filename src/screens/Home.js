@@ -54,8 +54,6 @@ const Home = ({ navigation }) => {
   }
 
   const getTasks = () => {
-    // setLoadingTasks(true)
-    // setTasks(null)
     SelectLatestTasks()
       .then(({ stat, res }) => {
         // console.log(res)

@@ -92,7 +92,7 @@ const AddTask = ({ route }) => {
   const AddTaskFunc = () => {
     if (name !== "") {
       if (catId !== null) {
-        insertTask(name, catId)
+        insertTask(name, catId, check,`${date1.getFullYear()}-${date1.getMonth() + 1}-${date1.getDate()}T${time1.toString().slice(0, 6)}00.000`)
           .then(({ stat, message }) => {
             if (check) setScheduledNotification()
             navigation.navigate('Home')
@@ -268,7 +268,6 @@ const AddTask = ({ route }) => {
               </TouchableOpacity> */}
             </View>
             <View>
-              {/* <Text style={{color:"black"}}>{date1.toJSON()}</Text> */}
               <Text style={{ color: "black", fontSize: 20 }}>{check && `Remainder set on ${date1.getDate()}/${date1.getMonth() + 1}/${date1.getFullYear()}\n@ ${new Date(`2023-12-12T${time1}`).toLocaleTimeString()}`}</Text>
             </View>
           </View>

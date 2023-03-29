@@ -31,6 +31,8 @@ export const CreateTasksTable = () => {
         "name"	TEXT NOT NULL,
         "checked"	INTEGER DEFAULT 0,
         "Date" INTEGER NOT NULL,
+        "scheduled" INTEGER NOT NULL,
+        "scheduled_datetime" TEXT,
         PRIMARY KEY("id" AUTOINCREMENT)
         FOREIGN KEY(categoryId) REFERENCES categories(id)
         ON DELETE CASCADE
@@ -69,24 +71,45 @@ export const insertCategory = ({ name, iconName, iconColor }) => {
   })
 }
 
-export const insertTask = (name, categoryId) => {
+export const insertTask = (name, categoryId, scheduled, date) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
-      tx.executeSql(
-        `insert into tasks (
-          categoryId,
-          name,
-          "Date"
-          ) values (?,?,?);`,
-        [categoryId, name, Date.now()],
-        () => {
-          resolve({ stat: true, message: 'Task added' })
-        },
-        err => {
-          console.log(err)
-          reject({ stat: false })
-        }
-      )
+      if (scheduled) {
+        tx.executeSql(
+          `insert into tasks (
+            categoryId,
+            name,
+            "Date",
+            "scheduled",
+            "scheduled_datetime"
+            ) values (?,?,?,?,?);`,
+          [categoryId, name, Date.now(), scheduled, date],
+          () => {
+            resolve({ stat: true, message: 'Task added' })
+          },
+          err => {
+            console.log(err)
+            reject({ stat: false })
+          }
+        )
+      } else {
+        tx.executeSql(
+          `insert into tasks (
+            categoryId,
+            name,
+            "Date",
+            "scheduled"
+            ) values (?,?,?,?);`,
+          [categoryId, name, Date.now(), false],
+          () => {
+            resolve({ stat: true, message: 'Task added' })
+          },
+          err => {
+            console.log(err)
+            reject({ stat: false })
+          }
+        )
+      }
     })
   })
 }
@@ -165,20 +188,20 @@ export const HandleCheck = (id, checked) => {
 }
 
 export const getTaskDetails = (categoryId) => {
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
         `select count(checked) as "check" from tasks where checked = 0 and categoryId = ?;`,
         [categoryId],
-        (tx,res) => {
+        (tx, res) => {
           const unchecked = res.rows.item(0).check
           tx.executeSql(
             `select count(checked) as "check" from tasks where checked = 1 and categoryId = ?;`,
             [categoryId],
-            (tx,res1) => {
+            (tx, res1) => {
               const checked = res1.rows.item(0).check
               resolve({
-                progress: checked / (unchecked+checked),
+                progress: checked / (unchecked + checked),
                 checked: checked,
                 unchecked: unchecked
               })
@@ -198,7 +221,7 @@ export const SelectLatestTasks = () => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        `select * from tasks order by "Date" desc limit 10;`,
+        `select * from tasks where scheduled=false order by "Date" desc limit 10;`,
         [],
         (tx, res) => {
           let len = res.rows.length
@@ -228,7 +251,7 @@ export const SelectTasks = (categoryId) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        `select * from tasks where categoryId = ? order by id desc;`,
+        `select * from tasks where categoryId = ? and scheduled=false order by id desc;`,
         [categoryId],
         (tx, res) => {
           let len = res.rows.length
@@ -238,7 +261,32 @@ export const SelectTasks = (categoryId) => {
               result.push(res.rows.item(i))
             }
             resolve(result)
-          }else reject(false)
+          } else reject(false)
+        },
+        (err) => {
+          console.log(err)
+          reject(err)
+        }
+      )
+    })
+  })
+}
+
+export const SelectScheduledTasks = (categoryId) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `select * from tasks where categoryId = ? and scheduled=true order by id desc;`,
+        [categoryId],
+        (tx, res) => {
+          let len = res.rows.length
+          if (len > 0) {
+            let result = []
+            for (let i = 0; i < len; i++) {
+              result.push(res.rows.item(i))
+            }
+            resolve(result)
+          } else reject(false)
         },
         (err) => {
           console.log(err)
