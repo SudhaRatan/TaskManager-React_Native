@@ -22,10 +22,11 @@ export const testNotification = (obj) => {
   })
 }
 
-export const testScheduleNotification = (date,data) => {
+export const testScheduleNotification = (date, data, id) => {
   PushNotification.localNotificationSchedule({
+    id: `${id}`,
     channelId: "mainNotis",
-    title:data.title,
+    title: data.title,
     message: data.message,
     playSound: true,
     soundName: "default",
@@ -33,4 +34,17 @@ export const testScheduleNotification = (date,data) => {
     allowWhileIdle: true,
     repeatTime: 1,
   });
+}
+
+export const cancelNotification = (id) => {
+  PushNotification.cancelLocalNotification(id)
+}
+
+export const getScheduledNotificationsArray = () => {
+  PushNotification.getScheduledLocalNotifications(arr => {
+    arr.map(arr1 => {
+      console.log(arr1)
+    })
+  });
+  // PushNotification.cancelAllLocalNotifications()
 }

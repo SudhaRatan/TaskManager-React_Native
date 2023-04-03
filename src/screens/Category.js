@@ -23,6 +23,7 @@ import {
   SelectScheduledTasks,
 } from '../db-functions/db-sqlite';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { cancelNotification } from '../notifications/notifications';
 
 const Category = ({ route, navigation }) => {
 
@@ -83,6 +84,20 @@ const Category = ({ route, navigation }) => {
     setTasks(tasks.filter(task => task.id !== id))
     try {
       await deleteTask(id)
+      changeState()
+      getTD()
+    } catch (error) {
+      console.log(error)
+      ToastAndroid("Error occured", 1000)
+    }
+  }
+
+  const handleDeleteST = async (id) => {
+    setScheduledTasks(scheduledTasks.filter(task => task.id !== id))
+    try {
+      await deleteTask(id)
+      changeState()
+      cancelNotification(id)
       getTD()
     } catch (error) {
       console.log(error)
@@ -219,7 +234,7 @@ const Category = ({ route, navigation }) => {
                   {
                     scheduledTasks.map((item, index) => {
                       return (
-                        <TaskCardScheduled key={item.id} index={index} handleDelete={handleDelete} {...item}
+                        <TaskCardScheduled key={item.id} index={index} handleDelete={handleDeleteST} {...item}
                           change={change}
                           changeState={changeState}
                         />

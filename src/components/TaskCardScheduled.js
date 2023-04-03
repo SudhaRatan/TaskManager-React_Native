@@ -5,17 +5,20 @@ import {
   Animated as Anim,
   Pressable,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { Swipeable } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { AnimatePresence } from 'moti';
 import CheckBox from './checkBox';
 import CheckBox1 from './checkBox1';
-import { HandleCheck } from '../db-functions/db-sqlite';
+import { HandleCheck, removeTaskFromScheduled } from '../db-functions/db-sqlite';
 import Animated, { Layout, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 import { SelectCategoryColor } from '../db-functions/db-sqlite';
+import { cancelNotification } from '../notifications/notifications';
 
 const TaskCardScheduled = ({ name, checked, id, index, handleDelete, categoryId, changeState, scheduled_datetime }) => {
   const { width, height } = Dimensions.get('window')
@@ -38,6 +41,25 @@ const TaskCardScheduled = ({ name, checked, id, index, handleDelete, categoryId,
 
   const getColor = async () => {
     setColor(await SelectCategoryColor(categoryId))
+  }
+
+  const [options, setOptions] = useState(false)
+
+  const handleLongPress = () => {
+    setOptions(!options)
+  }
+
+  const removescheduled = () => {
+    removeTaskFromScheduled(id)
+      .then(res => {
+        if(res) {
+          changeState()
+          cancelNotification(id)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   useEffect(() => {
@@ -107,6 +129,7 @@ const TaskCardScheduled = ({ name, checked, id, index, handleDelete, categoryId,
           onPressIn={() => pressInOut(0.92)}
           onPressOut={() => pressInOut(1)}
           onPress={handleCheck}
+          onLongPress={handleLongPress}
         >
           <Anim.View style={[
             {
@@ -120,15 +143,32 @@ const TaskCardScheduled = ({ name, checked, id, index, handleDelete, categoryId,
               {!check && <CheckBox color={color} handleCheck={handleCheck} />}
               {check && <CheckBox1 color={color} handleCheck={handleCheck} />}
             </AnimatePresence>
-            <Text style={[
+            <AnimatePresence>
+
               {
-                color: check ? '#808080' : '#5F5F63',
-                textDecorationLine: check ? 'line-through' : 'none'
-              },
-              St.taskText
-            ]}>
-              {name}
-            </Text>
+                options ?
+                  <View style={{ flex: 1, gap: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                    <TouchableOpacity onPress={removescheduled}>
+                      <Text style={[St.taskText, { color: color, verticalAlign: 'middle', borderWidth: 1, paddingHorizontal: 5, borderColor: color, borderRadius: 10, }]} >
+                        Remove from scheduled
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setOptions(false)}>
+                      <View style={{ borderWidth: 1, padding: 5, borderColor: color, borderRadius: 10, }}>
+                        <AntDesign name='back' color={color} size={30} />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                  :
+                  <Text style={[
+                    {
+                      color: check ? '#808080' : '#5F5F63',
+                      textDecorationLine: check ? 'line-through' : 'none',
+                    },
+                    St.taskText
+                  ]}>{name}</Text>
+              }
+            </AnimatePresence>
           </Anim.View>
           <View style={{
             backgroundColor: '#fff',
@@ -143,12 +183,14 @@ const TaskCardScheduled = ({ name, checked, id, index, handleDelete, categoryId,
               { translateY: addButtonHeight }
             ],
             borderBottomLeftRadius: 80,
-            borderBottomRightRadius:20,
+            borderBottomRightRadius: 20,
           }} >
             <Text style={{
-              color:'#000',
-              textAlign:'center'
-            }}>{new Date(scheduled_datetime).toString().slice(4,new Date(scheduled_datetime).toString().length - 12)}</Text>
+              color: '#000',
+              textAlign: 'center'
+            }}>
+              {new Date(scheduled_datetime).toString().slice(4, new Date(scheduled_datetime).toString().length - 12)}
+            </Text>
           </View>
         </Pressable>
       </Swipeable>

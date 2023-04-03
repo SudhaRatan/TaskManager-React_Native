@@ -92,9 +92,11 @@ const AddTask = ({ route }) => {
   const AddTaskFunc = () => {
     if (name !== "") {
       if (catId !== null) {
-        insertTask(name, catId, check,`${date1.getFullYear()}-${date1.getMonth() + 1}-${date1.getDate()}T${time1.toString().slice(0, 6)}00.000`)
-          .then(({ stat, message }) => {
-            if (check) setScheduledNotification()
+        console.log(date1.getMonth().toString().length)
+        const month = date1.getMonth().toString().length < 9 ? `0${date1.getMonth() + 1}` : date1.getMonth() + 1
+        insertTask(name, catId, check, `${date1.getFullYear()}-${month}-${date1.getDate()}T${time1.toString().slice(0, 6)}00.000`)
+          .then(({ stat, message, id }) => {
+            if (check) setScheduledNotification(id)
             navigation.navigate('Home')
             ToastAndroid.show(message, 2000)
           })
@@ -105,11 +107,11 @@ const AddTask = ({ route }) => {
     } else ToastAndroid.show('Enter task', 1000)
   }
 
-  const setScheduledNotification = () => {
+  const setScheduledNotification = (id) => {
     testScheduleNotification(`${date1.getFullYear()}-${date1.getMonth() + 1}-${date1.getDate()}T${time1.toString().slice(0, 6)}00.000`, {
       title: categoryName,
       message: name,
-    })
+    }, id)
   }
 
   const [date1, setDate1] = useState(new Date());

@@ -84,8 +84,9 @@ export const insertTask = (name, categoryId, scheduled, date) => {
             "scheduled_datetime"
             ) values (?,?,?,?,?);`,
           [categoryId, name, Date.now(), scheduled, date],
-          () => {
-            resolve({ stat: true, message: 'Task added' })
+          (tx, res) => {
+            console.log(res.insertId)
+            resolve({ stat: true, message: 'Task added', id: res.insertId })
           },
           err => {
             console.log(err)
@@ -101,7 +102,7 @@ export const insertTask = (name, categoryId, scheduled, date) => {
             "scheduled"
             ) values (?,?,?,?);`,
           [categoryId, name, Date.now(), false],
-          () => {
+          (tx, res) => {
             resolve({ stat: true, message: 'Task added' })
           },
           err => {
@@ -276,7 +277,7 @@ export const SelectScheduledTasks = (categoryId) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
-        `select * from tasks where categoryId = ? and scheduled=true order by id desc;`,
+        `select * from tasks where categoryId = ? and scheduled=true order by scheduled_datetime;`,
         [categoryId],
         (tx, res) => {
           let len = res.rows.length
@@ -290,6 +291,23 @@ export const SelectScheduledTasks = (categoryId) => {
         },
         (err) => {
           console.log(err)
+          reject(err)
+        }
+      )
+    })
+  })
+}
+
+export const removeTaskFromScheduled = (id) => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `update tasks set scheduled=false,scheduled_datetime=null where id=?`,
+        [id],
+        (tx, res) => {
+          resolve(true)
+        },
+        err => {
           reject(err)
         }
       )
