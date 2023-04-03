@@ -4,12 +4,15 @@ import {
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 
 import Home from '../screens/Home';
 import MyDrawer from '../components/MyDrawer';
 import AddCategory from '../screens/AddCategory';
 import AddTask from '../screens/AddTask';
 import Category from '../screens/Category';
+import FirstTime from '../screens/FirstTime';
 
 const MainStack = createStackNavigator();
 const MainDrawerNavig = createDrawerNavigator();
@@ -42,11 +45,25 @@ const MainDrawer = () => {
 
 const MainNavigation = () => {
 
+  const [notFirstTime, setNotFirstTime] = useState(null)
+
+  const check = async () => {
+    setNotFirstTime(await AsyncStorage.getItem('notFirstTime'))
+  }
+
+  useEffect(() => {
+    check()
+  }, [])
+
   return (
     <NavigationContainer>
       <MainStack.Navigator screenOptions={{
         header: () => null
       }}>
+        {
+          !notFirstTime &&
+          <MainStack.Screen name="FirstTime" component={FirstTime} />
+        }
         <MainStack.Screen name="Main" component={MainDrawer} />
         <MainStack.Screen name="Category" component={Category} />
         <MainStack.Screen name="AddCategory" component={AddCategory} />

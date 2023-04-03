@@ -16,6 +16,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
 import { ToastAndroid } from 'react-native';
 import { createChannel } from '../notifications/notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   CreateCategoriesTable,
@@ -31,6 +32,11 @@ import {
 
 const Home = ({ navigation }) => {
 
+  const [name, setName] = useState('')
+  const getName = async() => {
+    setName(await AsyncStorage.getItem('name'))
+  }
+  
   const delCat = () => {
     dropCategories()
       .then(res => console.log(res))
@@ -69,6 +75,7 @@ const Home = ({ navigation }) => {
   const isDrawerOpen = useDrawerStatus() === 'open';
 
   useEffect(() => {
+    getName();
     drawerAnim();
     // delCat();
     CreateCategoriesTable();
@@ -160,7 +167,7 @@ const Home = ({ navigation }) => {
         ]}>
           {/* Greeting */}
           <View>
-            <Text style={St.greeting}>What's up, Rohit!</Text>
+            <Text style={St.greeting}>What's up, {name}!</Text>
           </View>
           {/* Categories */}
           <View
