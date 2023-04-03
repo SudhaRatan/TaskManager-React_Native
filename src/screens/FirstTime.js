@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, Animated, Dimensions, TouchableOpacity, TextInput, ToastAndroid } from 'react-native'
+import { View, Text, StatusBar, Animated, Dimensions, TouchableWithoutFeedback, TextInput, ToastAndroid } from 'react-native'
 import { MotiView } from 'moti'
 import { useRef, useEffect, useState } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -13,6 +13,8 @@ const FirstTime = () => {
   const animWidth = useRef(new Animated.Value(0)).current
   const animScale = useRef(new Animated.Value(0)).current
   const animInp = useRef(new Animated.Value(0)).current
+
+  const refInput = useRef(null);
 
   const navigation = useNavigation()
 
@@ -44,8 +46,11 @@ const FirstTime = () => {
       Animated.spring(animInp, {
         toValue: 1,
         useNativeDriver: true
-      }).start(),
+      }).start(() => {
+        refInput.current.focus()
+      }),
     ])
+
   }
 
   const [name, setName] = useState('')
@@ -104,6 +109,7 @@ const FirstTime = () => {
         }}
       >
         <TextInput
+          ref={refInput}
           style={{
             // backgroundColor: '#000555',
             width: width * 0.7,
@@ -114,11 +120,11 @@ const FirstTime = () => {
           placeholder="What's your name ?"
           onChange={(val) => setName(val.nativeEvent.text)}
         />
-        <TouchableOpacity onPress={setusername}>
+        <TouchableWithoutFeedback onPress={setusername}>
           <AntDesign name='swapright' size={40} />
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
       </Animated.View>
-      <TouchableOpacity
+      <TouchableWithoutFeedback
         style={{
           position: 'absolute',
         }}
@@ -149,7 +155,7 @@ const FirstTime = () => {
         }}>
           <Entypo color='#111E53' name='triangle-right' size={60} />
         </Animated.View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
 
       {/* 1st component */}
       <Animated.View style={{
