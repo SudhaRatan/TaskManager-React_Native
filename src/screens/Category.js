@@ -9,6 +9,7 @@ import {
   // TouchableOpacity
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CircularProgressBase from 'react-native-circular-progress-indicator';
 import { useRef, useState, useEffect } from 'react';
 import { getTaskDetails } from '../db-functions/db-sqlite';
@@ -24,6 +25,7 @@ import {
 } from '../db-functions/db-sqlite';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { cancelNotification } from '../notifications/notifications';
+import { MotiView } from 'moti';
 
 const Category = ({ route, navigation }) => {
 
@@ -34,6 +36,7 @@ const Category = ({ route, navigation }) => {
   const [change, setChange] = useState(false)
   const [progress, setProgress] = useState(0)
   const [newTask, setNewTask] = useState('')
+  const [rotate, setRotate] = useState(false)
 
   const handleInput = (e) => {
     setNewTask(e)
@@ -47,7 +50,8 @@ const Category = ({ route, navigation }) => {
   const getTasks = () => {
     SelectTasks(route.params.id)
       .then(res => {
-        setTasks(res)
+        if (rotate) setTasks(res.reverse())
+        else setTasks(res)
         setLoadingTasks(false)
       })
       .catch(err => {
@@ -111,6 +115,13 @@ const Category = ({ route, navigation }) => {
   const { height, width } = Dimensions.get('window')
 
   const addButtonHeight = Math.floor(width < height ? height * 0.08 : width * 0.08)
+
+  const rot = () => {
+    setRotate(!rotate)
+    let temp = tasks
+    temp.reverse()
+    setTasks(temp)
+  }
 
   const AddTaskFunc = async () => {
     if (newTask !== "") {
@@ -243,7 +254,7 @@ const Category = ({ route, navigation }) => {
                   }
                 </View>
                 :
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginVertical:10,padding:10,borderWidth:1,borderColor:route.params.color,borderRadius:50}}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 10, borderWidth: 1, borderColor: route.params.color, borderRadius: 50 }}>
                   <Text style={St.categoriesText}>Schedule Tasks to display here</Text>
                 </View>
           }
@@ -257,10 +268,46 @@ const Category = ({ route, navigation }) => {
               tasks
                 ?
                 <View>
-                  <Text style={{
-                    color: '#000',
-                    fontSize: 18,
-                  }}>Other tasks</Text>
+                  <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                    <Text style={{
+                      color: '#000',
+                      fontSize: 18,
+                    }}>Other tasks</Text>
+                    <TouchableOpacity onPress={rot} style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: 5,
+                      padding: 5,
+                      borderWidth: 1,
+                      borderRadius: 50,
+                      borderColor: route.params.color
+                    }}>
+                      <Text style={{
+                        color: '#000',
+                        fontSize: 15,
+                      }}>Sort</Text>
+                      <MotiView
+                        from={{
+                          rotateZ: '0deg'
+                        }}
+                        animate={{
+                          rotateZ: rotate ? '180deg' : '0deg'
+                        }}
+                        transition={{
+                          type:'timing'
+                        }}
+                      >
+                        <View>
+                          <FontAwesome name='sort' size={20} color={route.params.color} />
+                        </View>
+                      </MotiView>
+                    </TouchableOpacity>
+                  </View>
                   {
                     tasks.map((item, index) => {
                       return (
@@ -274,7 +321,7 @@ const Category = ({ route, navigation }) => {
                   <View style={{ height: addButtonHeight }} />
                 </View>
                 :
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',marginVertical:10,padding:10,borderWidth:1,borderColor:route.params.color,borderRadius:50}}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, padding: 10, borderWidth: 1, borderColor: route.params.color, borderRadius: 50 }}>
                   <Text style={St.categoriesText}>Add Tasks to display here</Text>
                 </View>
           }
@@ -315,8 +362,8 @@ const St = StyleSheet.create({
     paddingRight: 5,
     backgroundColor: '#F9FAFE',
   }),
-  categoriesText:{
-    color:'#000',
+  categoriesText: {
+    color: '#000',
   },
   CatCont: {
     // flex: 1,
@@ -332,7 +379,7 @@ const St = StyleSheet.create({
     elevation: 12,
     borderRadius: 20
   },
-  loadingSt:{
-    marginTop:50,
+  loadingSt: {
+    marginTop: 50,
   },
 })

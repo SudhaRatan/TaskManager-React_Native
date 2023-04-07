@@ -328,10 +328,10 @@ export const St = StyleSheet.create({
 })
 
 const colorPallete = [
-  "#F9ED69",
-  "#F08A5D",
-  "#9D07B0",
-  "#08D9D6",
+  "#F7C04A",
+  "#FF6000",
+  "#89375F",
+  "#57C5B6",
   "#FF2E63",
   "#3067C0"
 ]
